@@ -2,7 +2,7 @@ package API.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Weapon {
+public class Weapon implements Item {
 
     private int id;
 
@@ -27,7 +27,7 @@ public class Weapon {
 
     @Override
     public String toString() {
-        return "⚔️ *Weapon: " + name + "*\n" +
+        return "⚔️Weapon: " + name + "\n" +
                 "--- \n" +
                 "Category: " + category + " (" + type + ")\n" +
                 "Damage: " + damage + "\n" +
@@ -41,7 +41,6 @@ public class Weapon {
     public String getDamage() { return damage; }
     public String getEffects() { return effects; }
     public int getPrice() { return price; }
-    // ... (и так далее для всех новых и старых полей)
     public String getImageUrl() {
         return imageUrl;
     }

@@ -1,3 +1,5 @@
+import API.models.Armor;
+import API.models.Item;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
@@ -21,6 +23,7 @@ import java.util.List;
 public class Bot implements LongPollingSingleThreadUpdateConsumer {
     private final TelegramClient telegramClient;
     private final WitcherApiClient apiClient = new WitcherApiClient();
+    String btnText = "";
 
     public Bot(String botToken) {
         telegramClient = new OkHttpTelegramClient(botToken);
@@ -30,14 +33,14 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
     public void consume(Update update) {
         long userid = update.getMessage().getFrom().getId();
         System.out.println("userid: " + userid);
-        String btnText = "";
         if (update.hasMessage() && update.getMessage().hasText()) {
+
             String text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
             String chatIdString = String.valueOf(chat_id);
             switch (text) {
                 case "/start":
-                    SendMessage welcome = new SendMessage(chatIdString, "Привет, ведьмак! Выбери раздел:");
+                    SendMessage welcome = new SendMessage(chatIdString, "---");
                     welcome.setReplyMarkup(getMainMenuKeyboard());
                     try { telegramClient.execute(welcome); } catch (Exception e) { e.printStackTrace(); }
                     break;
@@ -47,7 +50,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     SendMessage message = SendMessage
                             .builder()
                             .chatId(chat_id)
-                            .text("Введи ID оружия (например, `1`):")
+                            .text("Insert weapon ID (ex., `1`):")
                             .build();
                     try {
                         telegramClient.execute(message); // Sending our message object to user
@@ -61,7 +64,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     message = SendMessage
                             .builder()
                             .chatId(chat_id)
-                            .text("Введи ID брони (например, `1`):")
+                            .text("Insert armor ID (ex., `1`):")
                             .build();
                     try {
                         telegramClient.execute(message); // Sending our message object to user
@@ -75,7 +78,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     message = SendMessage
                             .builder()
                             .chatId(chat_id)
-                            .text("Введи ID персонажа (например, `1`):")
+                            .text("Insert character ID (ex., `1`):")
                             .build();
                     try {
                         telegramClient.execute(message); // Sending our message object to user
@@ -89,7 +92,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     message = SendMessage
                             .builder()
                             .chatId(chat_id)
-                            .text("Введи название карты (например, `Каэр Морхен`):")
+                            .text("Insert map name (ex., `Kaer Morhen`):")
                             .build();
                     try {
                         telegramClient.execute(message);
@@ -100,12 +103,12 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
 
                 default:
                     if (text.matches("\\d+")) {
-                        handleRequestCommand(chat_id, btnText + text);
+                        handleRequestCommand(chat_id, btnText + " " + text);
                     } else {
                         message = SendMessage
                                 .builder()
                                 .chatId(chat_id)
-                                .text("Используй кнопки меню или введи ID")
+                                .text("Use buttons or insert an ID")
                                 .build();
                         try {
                             telegramClient.execute(message); // Sending our message object to user
@@ -231,57 +234,68 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
         return keyboardMarkup;
     }
     private void handleRequestCommand(long chatId, String messageText) {
-
         String[] parts = messageText.split(" ");
         String chatIdString = String.valueOf(chatId);
+        Item item = null;
 
         try {
             if (parts.length < 2) {
-                SendMessage helpMessage = new SendMessage(chatIdString, "Please specify" + parts[0] + " id. Example: `/weapon 1`");
+                SendMessage helpMessage = new SendMessage(chatIdString, "Пожалуйста, укажи ID. Пример: `" + parts[0] + " 1`");
                 helpMessage.setParseMode("Markdown");
                 telegramClient.execute(helpMessage);
                 return;
             }
 
+            String command = parts[0].toLowerCase().trim();
             int itemId = Integer.parseInt(parts[1].trim());
-            String itemType = parts[0].trim();
 
-
-
+            switch (command) {
+                case "оружие":
+                case "weapon":
+                    item = apiClient.getItemById(itemId, "Weapon", Weapon.class);
+                    break;
+                case "броня":
+                case "armor":
+                    item = apiClient.getItemById(itemId, "Armor", Armor.class);
+                    break;
+                case "персонаж":
+                case "character":
+                    // item = apiClient.getCharacterById(itemId); // Когда добавишь в API
+                    break;
+            }
+            System.out.println(item);
             if (item != null) {
-                String relativePath = item.getImageUrl().replace('\\', '/');
+
                 String baseApiUrl = "https://subaveragely-soupier-adella.ngrok-free.dev/";
-                String fullImageUrl = baseApiUrl + relativePath;
+                String fullImageUrl = baseApiUrl + item.getImageUrl().replace('\\', '/');
 
                 byte[] imageBytes = apiClient.downloadImage(fullImageUrl);
+
 
                 SendDocument sendDocument = SendDocument.builder()
                         .chatId(chatIdString)
                         .document(new InputFile(
                                 new ByteArrayInputStream(imageBytes),
-                                item.getName() + ".png" // Обязательно .png или .jpg для сохранения типа
+                                item.getName() + ".png" // Имя файла, которое увидит пользователь
                         ))
-
-                        // Документы поддерживают подпись (caption)
+                        .caption(item.toString()) // Описание предмета (toString из Weapon или Armor)
                         .parseMode("Markdown")
-                        .caption(item.toString())
                         .build();
 
-                // Отправляем документ
                 telegramClient.execute(sendDocument);
 
             } else {
-                SendMessage notFoundMessage = new SendMessage(chatIdString, "❌"+ itemType +" with ID " + itemId + " not found.");
+                SendMessage notFoundMessage = new SendMessage(chatIdString, "❌Class object " + command + " with ID " + itemId + " not found.");
                 telegramClient.execute(notFoundMessage);
             }
 
         } catch (NumberFormatException e) {
-
+            SendMessage errmsg = new SendMessage(chatIdString, "⚠️ ID must be a number.");
         } catch (IOException e) {
             SendMessage apiErrorMessage = new SendMessage(chatIdString, "🛑Error during connection to Witcher API or downloading image. Make sure that API and Ngrok are running.");
-            try { telegramClient.execute(apiErrorMessage); } catch (TelegramApiException ignored) {}
             e.printStackTrace();
-        } catch (TelegramApiException ignored) {
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,6 @@
 package API;
 
+import API.models.Item;
 import API.models.Weapon;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
@@ -16,9 +17,14 @@ public class WitcherApiClient {
     private final Gson gson = new Gson();
 
 
-    public Weapon getItemById(int id, String item) throws IOException {
-        String endpoint = "/"+item+"/" + id;
+    // Используем <T extends Item>, чтобы метод работал с любым классом, реализующим интерфейс Item
+    public <T extends Item> T getItemById(int id, String itemType, Class<T> clazz) throws IOException {
+
+        String endpoint = "/" + itemType + "/" + id;
+        System.out.println(endpoint);
         String fullUrl = BASE_URL + endpoint;
+        System.out.println(fullUrl);
+
         Request request = new Request.Builder()
                 .url(fullUrl)
                 .build();
@@ -30,9 +36,12 @@ public class WitcherApiClient {
                 }
                 throw new IOException("API request failed: " + response.code());
             }
+
             String jsonResponse = response.body().string();
-            System.out.println(jsonResponse);
-            return gson.fromJson(jsonResponse, Weapon.class);
+            System.out.println("JSON received: " + jsonResponse);
+
+            // Gson теперь парсит JSON именно в тот класс, который мы передали (clazz)
+            return gson.fromJson(jsonResponse, clazz);
         }
     }
 
