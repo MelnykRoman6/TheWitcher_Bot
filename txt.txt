@@ -1,0 +1,7 @@
+map res
+x = -1000 - 3000
+y = -1500 - 3000
+4000 * 4500
+
+pins and coordinates
+https://github.com/reubengann/Witcher3MapViewer
