@@ -1,5 +1,4 @@
 import API.WitcherApiClient;
-import config.*;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -11,7 +10,7 @@ public class Main {
 
 
 
-        String botToken = apikey; //your token here
+        String botToken = ConfigLoader.get("apikey");
         botsApplication.registerBot(botToken, new Bot(botToken));
 
         System.out.println("Bot successfully started!");
