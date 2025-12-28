@@ -10,7 +10,7 @@ public class Main {
 
 
 
-        String botToken = ConfigLoader.get("apikey");
+        String botToken = "8002882388:AAG-tpVMyAdrx0f7t5A151gj4r91WBNxtSw";
         botsApplication.registerBot(botToken, new Bot(botToken));
 
         System.out.println("Bot successfully started!");

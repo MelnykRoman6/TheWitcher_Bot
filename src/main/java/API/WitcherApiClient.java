@@ -11,13 +11,13 @@ import java.io.IOException;
 public class WitcherApiClient {
 
     private final OkHttpClient client = new OkHttpClient(); //idk
-    private static final String BASE_URL = "http://localhost:5000";
+    private static final String BASE_URL = " https://subaveragely-soupier-adella.ngrok-free.dev";
 
     private final Gson gson = new Gson();
 
 
-    public Weapon getWeaponById(int id) throws IOException {
-        String endpoint = "/Weapon/" + id;
+    public Weapon getItemById(int id, String item) throws IOException {
+        String endpoint = "/"+item+"/" + id;
         String fullUrl = BASE_URL + endpoint;
         Request request = new Request.Builder()
                 .url(fullUrl)
