@@ -244,7 +244,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                 .build();
 
         InlineKeyboardButton button = InlineKeyboardButton.builder()
-                .text("Open web map🗺️")
+                .text("Open map🗺️")
                 .webApp(webAppInfo)
                 .build();
 
