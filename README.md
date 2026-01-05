@@ -1,4 +1,5 @@
 # The Witcher 3 Bot
+*(@TheWitcherlIl_bot)*
 
 A bot created to help you play The Witcher 3. 
 It contains a database of all items in the game and an interactive map.
