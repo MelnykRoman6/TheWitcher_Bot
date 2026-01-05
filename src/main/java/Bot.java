@@ -5,11 +5,15 @@ import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateC
 import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.games.Animation;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import API.WitcherApiClient;
@@ -18,6 +22,7 @@ import API.models.Weapon;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Bot implements LongPollingSingleThreadUpdateConsumer {
@@ -89,16 +94,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
 
                 case "🗺️Map":
                     btnText = "map";
-                    message = SendMessage
-                            .builder()
-                            .chatId(chat_id)
-                            .text("Insert map name (ex., `Kaer Morhen`):")
-                            .build();
-                    try {
-                        telegramClient.execute(message);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
+                    sendMap(chat_id);
                     break;
 
                 default:
@@ -233,6 +229,41 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
         keyboardMarkup.setKeyboard(keyboard);
         return keyboardMarkup;
     }
+
+    public void sendMap(Long chatId) {
+        SendMessage message = SendMessage
+                .builder()
+                .chatId(chatId.toString())
+                .text("Web map")
+                .build();
+        // Ссылка на твой API (для теста используй ngrok, чтобы был https)
+        String url = "https://subaveragely-soupier-adella.ngrok-free.dev/index.html ";
+
+        WebAppInfo webAppInfo = WebAppInfo.builder()
+                .url(url)
+                .build();
+
+        InlineKeyboardButton button = InlineKeyboardButton.builder()
+                .text("Open web map🗺️")
+                .webApp(webAppInfo)
+                .build();
+
+        InlineKeyboardRow row = new InlineKeyboardRow();
+        row.add(button);
+
+        InlineKeyboardMarkup markup = InlineKeyboardMarkup.builder()
+                .keyboardRow(row)
+                .build();
+
+        message.setReplyMarkup(markup);
+
+        try {
+            telegramClient.execute(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void handleRequestCommand(long chatId, String messageText) {
         String[] parts = messageText.split(" ");
         String chatIdString = String.valueOf(chatId);
