@@ -8,6 +8,6 @@ It contains a database of all items in the game and an interactive map.
 ## Main functions
 - Function 1: returns all the information about any item in the game.
 - Function 2: Interactive map.
-
+##
 
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/ukrainiandeadinside) [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MelnykRoman6) 
