@@ -1,5 +1,5 @@
 # The Witcher 3 Bot
-![The Witcher ||| Bot](https://github.com/user-attachments/assets/2a7e75aa-fd2b-444a-99a9-6463fa9f7cc9)](t.me/TheWitcherlIl_bot)
+[![The Witcher ||| Bot](https://github.com/user-attachments/assets/2a7e75aa-fd2b-444a-99a9-6463fa9f7cc9)](t.me/TheWitcherlIl_bot)
 
 
 
