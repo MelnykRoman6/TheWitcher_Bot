@@ -18,11 +18,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import API.WitcherApiClient;
 import API.models.Weapon;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Bot implements LongPollingSingleThreadUpdateConsumer {
@@ -47,7 +45,11 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                 case "/start":
                     SendMessage welcome = new SendMessage(chatIdString, "---");
                     welcome.setReplyMarkup(getMainMenuKeyboard());
-                    try { telegramClient.execute(welcome); } catch (Exception e) { e.printStackTrace(); }
+                    try {
+                        telegramClient.execute(welcome);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
 
                 case "⚔️Weapon":
@@ -114,97 +116,8 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     }
                     break;
             }
-
-        }
-        else if (update.hasMessage() && update.getMessage().hasPhoto()) {
-            String message_text = "its a photo";
-            long chat_id = update.getMessage().getChatId();
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-        else if (update.hasMessage() && update.getMessage().hasVoice()) {
-            String message_text = "its a voice msg";
-            long chat_id = update.getMessage().getChatId();
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-        else if (update.hasMessage() && update.getMessage().hasViaBot()) {
-            String message_text = "its a msg forwarded from bot";
-            long chat_id = update.getMessage().getChatId();
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-        else if (update.hasMessage() && update.getMessage().hasSticker()) {
-            String message_text = "its a sticker";
-            long chat_id = update.getMessage().getChatId();
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-        else if (update.hasMessage() && update.getMessage().hasAnimation()) {
-            String message_text = "its a gif";
-            long chat_id = update.getMessage().getChatId();
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-            Animation animation = update.getMessage().getAnimation();
-            String AniID = animation.getFileId();
-            SendAnimation message2 = SendAnimation.builder()
-                    .chatId(chat_id)
-                    .animation(new InputFile(AniID))
-                    .build();
-            try {
-                telegramClient.execute(message2); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
         }
     }
-
-
 
     public ReplyKeyboardMarkup getMainMenuKeyboard() {
         List<KeyboardRow> keyboard = new ArrayList<>();
@@ -236,7 +149,6 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                 .chatId(chatId.toString())
                 .text("Web map")
                 .build();
-        // Ссылка на твой API (для теста используй ngrok, чтобы был https)
         String url = "https://subaveragely-soupier-adella.ngrok-free.dev/index.html ";
 
         WebAppInfo webAppInfo = WebAppInfo.builder()
@@ -291,7 +203,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     break;
                 case "персонаж":
                 case "character":
-                    // item = apiClient.getCharacterById(itemId); // Когда добавишь в API
+                    item = apiClient.getItemById(itemId, "Character", API.models.Character.class);
                     break;
             }
             System.out.println(item);

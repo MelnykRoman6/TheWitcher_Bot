@@ -45,6 +45,8 @@ public class WitcherApiClient {
         }
     }
 
+
+
     public byte[] downloadImage(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
@@ -57,4 +59,6 @@ public class WitcherApiClient {
             return response.body().bytes();
         }
     }
+
+
 }
