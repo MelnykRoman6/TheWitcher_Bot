@@ -1,13 +1,15 @@
 package API;
 
 import API.models.Item;
-import API.models.Weapon;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class WitcherApiClient {
 
@@ -40,11 +42,23 @@ public class WitcherApiClient {
             String jsonResponse = response.body().string();
             System.out.println("JSON received: " + jsonResponse);
 
-            // Gson теперь парсит JSON именно в тот класс, который мы передали (clazz)
             return gson.fromJson(jsonResponse, clazz);
         }
     }
 
+    public <T extends Item> List<T> getItemsList(String itemType, Class<T> clazz) throws IOException {
+        String fullUrl = BASE_URL + "/" + itemType;
+        Request request = new Request.Builder().url(fullUrl).build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            String jsonResponse = response.body().string();
+
+            Type listType = TypeToken.getParameterized(List.class, clazz).getType();
+            return gson.fromJson(jsonResponse, listType);
+        }
+    }
 
 
     public byte[] downloadImage(String url) throws IOException {

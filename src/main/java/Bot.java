@@ -1,5 +1,6 @@
 import API.models.Armor;
 import API.models.Item;
+import API.models.Monster;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
@@ -54,44 +55,17 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
 
                 case "⚔️Weapon":
                     btnText = "weapon";
-                    SendMessage message = SendMessage
-                            .builder()
-                            .chatId(chat_id)
-                            .text("Insert weapon ID (ex., `1`):")
-                            .build();
-                    try {
-                        telegramClient.execute(message); // Sending our message object to user
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
+                    getList(chat_id, btnText);
                     break;
 
                 case "🛡️Armor":
                     btnText = "armor";
-                    message = SendMessage
-                            .builder()
-                            .chatId(chat_id)
-                            .text("Insert armor ID (ex., `1`):")
-                            .build();
-                    try {
-                        telegramClient.execute(message); // Sending our message object to user
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
+                    getList(chat_id, btnText);
                     break;
 
                 case "👤Character":
                     btnText = "character";
-                    message = SendMessage
-                            .builder()
-                            .chatId(chat_id)
-                            .text("Insert character ID (ex., `1`):")
-                            .build();
-                    try {
-                        telegramClient.execute(message); // Sending our message object to user
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
+                    getList(chat_id, btnText);
                     break;
 
                 case "🗺️Map":
@@ -103,7 +77,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     if (text.matches("\\d+")) {
                         handleRequestCommand(chat_id, btnText + " " + text);
                     } else {
-                        message = SendMessage
+                        SendMessage message = SendMessage
                                 .builder()
                                 .chatId(chat_id)
                                 .text("Use buttons or insert an ID")
@@ -242,4 +216,46 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
         }
     }
 
+    private void getList(long chatId, String itemType) {
+        try {
+            List<? extends Item> items = apiClient.getItemsList(itemType, getModelClass(itemType));
+
+            if (items == null || items.isEmpty()) {
+                SendMessage message = SendMessage
+                        .builder()
+                        .chatId(chatId)
+                        .text("List is empty")
+                        .build();
+                try {
+                    telegramClient.execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+
+            StringBuilder message = new StringBuilder("<b>📜Select " + itemType + ":</b>\n\n");
+            for (Item item : items) {
+
+                message.append("<code>").append(item.getId()).append("</code>. ")
+                        .append(item.getName()).append("\n");
+            }
+
+            SendMessage sm = new SendMessage(String.valueOf(chatId), message.toString());
+            sm.setParseMode("HTML");
+            telegramClient.execute(sm);
+
+        } catch (IOException | TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Class<? extends Item> getModelClass(String type) {
+        switch (type.toLowerCase()) {
+            case "armor": return Armor.class;
+            case "character": return API.models.Character.class;
+            case "monster": return Monster.class;
+            default: return Weapon.class;
+        }
+    }
 }

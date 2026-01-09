@@ -30,7 +30,7 @@ public class Main {
             prop.load(input);
 
             botToken = prop.getProperty("bot.token");
-            System.out.println("bot token: " + botToken);
+
         } catch (IOException ex) {
             System.out.println("Error loading config file");
             ex.printStackTrace();

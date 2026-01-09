@@ -16,9 +16,9 @@ public class Weapon implements Item {
 
     private String effects;
 
-    private int weight;
+    private float weight;
 
-    private int price;
+    private String price;
 
     @SerializedName("imageUrl")
     private String imageUrl;
@@ -33,14 +33,14 @@ public class Weapon implements Item {
                 "Damage: " + damage + "\n" +
                 "Effects: " + (effects != null ? effects : "No effects") + "\n" +
                 "Weight: " + weight + "\n" +
-                "Price: " + price + "💰";
+                price;
     }
 
     public int getId() { return id; }
     public String getName() { return name; }
     public String getDamage() { return damage; }
     public String getEffects() { return effects; }
-    public int getPrice() { return price; }
+    public String getPrice() { return price; }
     public String getImageUrl() {
         return imageUrl;
     }
