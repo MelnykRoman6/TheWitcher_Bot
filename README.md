@@ -1,5 +1,7 @@
 # The Witcher 3 Bot
+![images](https://github.com/user-attachments/assets/2a7e75aa-fd2b-444a-99a9-6463fa9f7cc9)
 *(@TheWitcherlIl_bot)*
+
 
 A bot created to help you play The Witcher 3. 
 It contains a database of all items in the game and an interactive map.
