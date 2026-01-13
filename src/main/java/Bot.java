@@ -42,9 +42,11 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
             String text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
             String chatIdString = String.valueOf(chat_id);
+            SendMessage welcome = new SendMessage(chatIdString, "---");
+            welcome.setReplyMarkup(getMainMenuKeyboard());
             switch (text) {
                 case "/start":
-                    SendMessage welcome = new SendMessage(chatIdString, "---");
+                    welcome = new SendMessage(chatIdString, "---");
                     welcome.setReplyMarkup(getMainMenuKeyboard());
                     try {
                         telegramClient.execute(welcome);
