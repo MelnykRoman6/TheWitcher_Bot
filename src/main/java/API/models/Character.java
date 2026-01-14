@@ -23,7 +23,7 @@ public class Character implements Item {
     @Override
     public String toString() {
         return "👤Character: " + name + "\n" +
-                (alias != null ? "Also known as " + alias + "\n" : "") +
+                (alias != "None" ? "Also known as " + alias + "\n" : "") +
                 "------------------\n" +
                 "Race: " + race + "\n" +
                 "Sex: " + gender + "\n" +
