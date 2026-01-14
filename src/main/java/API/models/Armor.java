@@ -6,17 +6,17 @@ public class Armor implements Item {
     private String type;
     private String category;
     private float weight;
-    private int price;
+    private String price;
     private String imageUrl;
 
     public Armor() {}
 
-    // Реализация методов интерфейса Item
+    // Item
     @Override public int getId() { return id; }
     @Override public String getName() { return name; }
     @Override public String getImageUrl() { return imageUrl; }
 
-    // Красивый вывод для Telegram
+    // output in Telegram
     @Override
     public String toString() {
         return "🛡️Armor: " + name + "\n" +
@@ -24,11 +24,11 @@ public class Armor implements Item {
                 "Type: " + type + "\n" +
                 "Category: " + category + "\n" +
                 "Weight: " + weight + "\n" +
-                "Price: " + price + " 💰";
+                price;
     }
 
     public String getType() { return type; }
     public String getCategory() { return category; }
     public float getWeight() { return weight; }
-    public int getPrice() { return price; }
+    public String getPrice() { return price; }
 }

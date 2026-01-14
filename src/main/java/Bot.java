@@ -43,7 +43,8 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
             long chat_id = update.getMessage().getChatId();
             String chatIdString = String.valueOf(chat_id);
             SendMessage welcome = new SendMessage(chatIdString, "---");
-            welcome.setReplyMarkup(getMainMenuKeyboard());
+            welcome.setReplyMarkup(getMainMenuKeyboard()); //sets the buttons
+            //switchcase for all buttons implemented so far
             switch (text) {
                 case "/start":
                     welcome = new SendMessage(chatIdString, "---");
@@ -75,10 +76,10 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
                     sendMap(chat_id);
                     break;
 
-                default:
+                default: //if it is not a text from button bot assumes its id requested
                     if (text.matches("\\d+")) {
                         handleRequestCommand(chat_id, btnText + " " + text);
-                    } else {
+                    } else { //and otherwise sends this message
                         SendMessage message = SendMessage
                                 .builder()
                                 .chatId(chat_id)
@@ -94,15 +95,13 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
             }
         }
     }
-
+    //buttons
     public ReplyKeyboardMarkup getMainMenuKeyboard() {
         List<KeyboardRow> keyboard = new ArrayList<>();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(keyboard);
         keyboardMarkup.setSelective(true);
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(false);
-
-
 
         KeyboardRow row1 = new KeyboardRow();
         row1.add("⚔️Weapon");
@@ -118,7 +117,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
         keyboardMarkup.setKeyboard(keyboard);
         return keyboardMarkup;
     }
-
+    //map
     public void sendMap(Long chatId) {
         SendMessage message = SendMessage
                 .builder()
@@ -151,7 +150,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
             e.printStackTrace();
         }
     }
-
+    //function for requests
     private void handleRequestCommand(long chatId, String messageText) {
         String[] parts = messageText.split(" ");
         String chatIdString = String.valueOf(chatId);
@@ -159,7 +158,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
 
         try {
             if (parts.length < 2) {
-                SendMessage helpMessage = new SendMessage(chatIdString, "Пожалуйста, укажи ID. Пример: `" + parts[0] + " 1`");
+                SendMessage helpMessage = new SendMessage(chatIdString, "Please insert an id. Example: `" + parts[0] + " 1`");
                 helpMessage.setParseMode("Markdown");
                 telegramClient.execute(helpMessage);
                 return;
@@ -167,7 +166,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
 
             String command = parts[0].toLowerCase().trim();
             int itemId = Integer.parseInt(parts[1].trim());
-
+            //switchcase that creates a request in base of the item requested
             switch (command) {
                 case "оружие":
                 case "weapon":
@@ -190,14 +189,14 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
 
                 byte[] imageBytes = apiClient.downloadImage(fullImageUrl);
 
-
+                //document because image looks better
                 SendDocument sendDocument = SendDocument.builder()
                         .chatId(chatIdString)
                         .document(new InputFile(
                                 new ByteArrayInputStream(imageBytes),
-                                item.getName() + ".png" // Имя файла, которое увидит пользователь
+                                item.getName() + ".png"
                         ))
-                        .caption(item.toString()) // Описание предмета (toString из Weapon или Armor)
+                        .caption(item.toString())
                         .parseMode("Markdown")
                         .build();
 
@@ -217,7 +216,7 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
             e.printStackTrace();
         }
     }
-
+    //function to request the list of items existent in db as soon as user clicks button
     private void getList(long chatId, String itemType) {
         try {
             List<? extends Item> items = apiClient.getItemsList(itemType, getModelClass(itemType));

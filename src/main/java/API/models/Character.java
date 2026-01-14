@@ -14,11 +14,12 @@ public class Character implements Item {
 
     public Character() {}
 
+    //item
     @Override public int getId() { return id; }
     @Override public String getName() { return name; }
     @Override public String getImageUrl() { return imageUrl; }
 
-
+    //output
     @Override
     public String toString() {
         return "👤Character: " + name + "\n" +

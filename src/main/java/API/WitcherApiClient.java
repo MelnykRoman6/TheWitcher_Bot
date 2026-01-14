@@ -13,15 +13,16 @@ import java.util.List;
 
 public class WitcherApiClient {
 
-    private final OkHttpClient client = new OkHttpClient(); //idk
+    private final OkHttpClient client = new OkHttpClient();
+    //ngrok
     private static final String BASE_URL = " https://subaveragely-soupier-adella.ngrok-free.dev";
 
     private final Gson gson = new Gson();
 
 
-    // Используем <T extends Item>, чтобы метод работал с любым классом, реализующим интерфейс Item
+    //use T ext. item for use it for all classes
     public <T extends Item> T getItemById(int id, String itemType, Class<T> clazz) throws IOException {
-
+        //since all classes can use it i pass type to go to the right folder
         String endpoint = "/" + itemType + "/" + id;
         System.out.println(endpoint);
         String fullUrl = BASE_URL + endpoint;
@@ -45,7 +46,7 @@ public class WitcherApiClient {
             return gson.fromJson(jsonResponse, clazz);
         }
     }
-
+    //same but to obtain the list of all items the button user clicked
     public <T extends Item> List<T> getItemsList(String itemType, Class<T> clazz) throws IOException {
         String fullUrl = BASE_URL + "/" + itemType;
         Request request = new Request.Builder().url(fullUrl).build();
