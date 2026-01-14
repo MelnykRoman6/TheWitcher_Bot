@@ -36,7 +36,6 @@ public class Bot implements LongPollingSingleThreadUpdateConsumer {
     @Override
     public void consume(Update update) {
         long userid = update.getMessage().getFrom().getId();
-        System.out.println("userid: " + userid);
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             String text = update.getMessage().getText();

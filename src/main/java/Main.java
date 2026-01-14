@@ -26,7 +26,6 @@ public class Main {
             } else {
                 prop.load(input);
             }
-            System.out.println("prop loaded");
             prop.load(input);
 
             botToken = prop.getProperty("bot.token");

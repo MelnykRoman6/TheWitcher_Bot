@@ -41,7 +41,6 @@ public class WitcherApiClient {
             }
 
             String jsonResponse = response.body().string();
-            System.out.println("JSON received: " + jsonResponse);
 
             return gson.fromJson(jsonResponse, clazz);
         }
