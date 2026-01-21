@@ -13,7 +13,7 @@ It contains a database of all items in the game and an interactive map.
 ## Installation
 Bot:
 - clone this repo
-- [download this api][https://github.com/diwashrestha/WitcherAPI]
+- [download this api](https://github.com/diwashrestha/WitcherAPI)
 - run an api with "dotnet run --project witcherapi" from VSCode
 - build the bot and run it "cd (your path)\.jdks\ms-21.0.8\bin
 java -jar (your path)\IdeaProjects\TheWitcher_Bot\out\artifacts\TheWitcher_Bot_jar\TheWitcher_Bot.jar"
